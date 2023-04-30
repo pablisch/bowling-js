@@ -19,34 +19,42 @@ class Play {
   askPinsDown() {
     if (this.currentFrame < 6) {
       let frameNumber = this.currentFrame + 1;
-      // let frameNumber = this.scorecard.length() + 1;
 
       this.rl.question(`Enter pins down for frame ${frameNumber} roll 1? `, (pins1) => {
         pins1 = parseInt(pins1);
         console.log(`You knocked down ${pins1} pins!`);
 
-        if (pins1 < 10 || this.currentFrame === 5) {
+        if (pins1 < 10 || frameNumber == 6) {
           this.rl.question(`Enter pins down for frame ${frameNumber} roll 2? `, (pins2) => {
             pins2 = parseInt(pins2);
             console.log(`You knocked down ${pins2} pins!`);
+
+            this.currentFrame++;
+            this.askPinsDown();
           });
-
-          if (pins1 === 10 && this.currentFrame === 5) {
-            this.rl.question(`Enter pins down for frame ${frameNumber} roll 3? `, (pins3) => {
-              pins3 = parseInt(pins3);
-              console.log(`You knocked down ${pins3} pins!`);
-
-              this.currentFrame++;
-              this.askPinsDown();
-            });
-          } else {
-            this.currentFrame++;
-            this.askPinsDown();
-          }
-
         } else {
+          if (this.currentFrame < 5) {
             this.currentFrame++;
             this.askPinsDown();
+          } else {
+            this.rl.question(`Enter pins down for frame ${frameNumber} roll 2? `, (pins2) => {
+              pins2 = parseInt(pins2);
+              console.log(`You knocked down ${pins2} pins!`);
+
+              if (pins1 + pins2 >= 10) {
+                this.rl.question(`Enter pins down for frame ${frameNumber} roll 3? `, (pins3) => {
+                  pins3 = parseInt(pins3);
+                  console.log(`You knocked down ${pins3} pins!`);
+                  
+                  this.currentFrame++;
+                  this.askPinsDown();
+                });
+              } else {
+                this.currentFrame++;
+                this.askPinsDown();
+              }
+            });
+          }
         }
         
       });
